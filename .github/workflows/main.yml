@@ -18,7 +18,7 @@ jobs:
 
     - name: Download RoR2
       if: steps.cache-ror2.outputs.cache-hit != 'true'
-      run: /download-ror2.sh
+      run: ./download-ror2.sh
 
     - name: Generate Resources Path Webpage
-      run: /generate-resources-path-webpage.sh
+      run: ./generate-resources-path-webpage.sh
