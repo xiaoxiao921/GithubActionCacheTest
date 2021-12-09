@@ -13,12 +13,12 @@ jobs:
       id: cache-ror2
       uses: actions/cache@v2
       with:
-        path: home/steam/ror2-dedicated
+        path: ror2
         key: ${{ runner.os }}-${{ hashFiles('**/*.dll') }}
 
     - name: Download RoR2
       if: steps.cache-ror2.outputs.cache-hit != 'true'
-      run: /download-ror2.sh -d prime-numbers
+      run: /download-ror2.sh
 
     - name: Generate Resources Path Webpage
       run: /generate-resources-path-webpage.sh
