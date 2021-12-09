@@ -8,13 +8,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Get RoR2 version id
+      id: ror2-version
+      run: echo "::set-output name=value::$(curl -s https://api.steamcmd.net/v1/info/1180760 | jq -r ".data.\"1180760\".depots.branches.public.buildid")"
 
     - name: Cache RoR2
       id: cache-ror2
       uses: actions/cache@v2
       with:
         path: ror2
-        key: ${{ runner.os }}-${{ hashFiles('**/*.dll') }}
+        key: ${{ steps.ror2-version.outputs.value }}
 
     - name: Download RoR2
       if: steps.cache-ror2.outputs.cache-hit != 'true'
