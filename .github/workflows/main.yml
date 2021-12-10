@@ -42,7 +42,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add ./AssetsPathDumper/AssetsPathDumper/bin/Release/net6.0/assetPathsDump.html
+        ls -lR
+        git add "./AssetsPathDumper/AssetsPathDumper/bin/Release/net6.0/assetPathsDump.html"
         git commit -m "Add html"
     - name: Push html to repo
       uses: ad-m/github-push-action@master
