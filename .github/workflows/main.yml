@@ -23,6 +23,29 @@ jobs:
     - name: Download RoR2
       if: steps.cache-ror2.outputs.cache-hit != 'true'
       run: ./download-ror2.sh
-
-    - name: Generate Resources Path Webpage
-      run: ./generate-resources-path-webpage.sh
+      
+    - name: Checkout AssetsPathDumper
+      uses: actions/checkout@v2
+      with:
+        repository: KingEnderBrine/AssetsPathDumper
+        path: './AssetsPathDumper'
+      
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+          dotnet-version: 6.0.x
+    - run: |
+        cd ./AssetsPathDumper/AssetsPathDumper/
+        dotnet run --configuration Release ../../ror2/
+        
+    - name: Prepare git commit
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add ./AssetsPathDumper/AssetsPathDumper/bin/Release/net6.0/assetPathsDump.html
+        git commit -m "Add html"
+    - name: Push html to repo
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
