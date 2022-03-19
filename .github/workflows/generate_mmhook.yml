@@ -40,7 +40,7 @@ jobs:
       if: steps.cache-ror2.outputs.cache-hit != 'true'
       run: ./steamcmd.sh +login anonymous +force_install_dir ror2 +@sSteamCmdForcePlatformType windows +app_update "1180760" +quit
       
-    - name: Setup dotnet 5.0
+    - name: Setup dotnet
       uses: actions/setup-dotnet@v1
       with:
           dotnet-version: 5.0.x
@@ -57,5 +57,16 @@ jobs:
         cd MonoMod/
         dotnet build --configuration Release
         cd MonoMod.RuntimeDetour.HookGen/bin/Release/net5.0
-        ./MonoMod.RuntimeDetour.HookGen --private "../../../../../ror2/Risk of Rain 2_Data/Managed/RoR2.dll" MMHOOK_RoR2.dll
+        ./MonoMod.RuntimeDetour.HookGen --private "../../../../../ror2/Risk of Rain 2_Data/Managed/RoR2.dll" ../../../../../MMHOOK_RoR2.dll
+
+    - name: Setup NuGet Upload
+      uses: NuGet/setup-nuget@v1.0.5
+      with:
+        nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+        
+    - name: Create NuGet Package
+      run: |
+        sed -i -E 's/1.0.0/$GitVersion_MajorMinorPatch.0.0/g' Package.nuspec
+        nuget pack package.nuspec
         ls -al
+    
