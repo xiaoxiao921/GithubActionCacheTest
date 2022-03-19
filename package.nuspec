@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>MMHOOK.RoR2</id>
+    <version>1.0.0</version>
+    <authors>RiskOfThunder</authors>
+    <owners>RiskOfThunder</owners>
+    <description>MMHOOK for Risk of Rain 2</description>
+    <tags>unity modding game monomod mmhook riskofrain2</tags>
+  </metadata>
+  <files>
+    <file src="MMHOOK_RoR2.dll" target="lib"></file>
+  </files>
+</package>
