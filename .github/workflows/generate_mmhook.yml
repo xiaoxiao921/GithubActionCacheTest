@@ -40,19 +40,22 @@ jobs:
       if: steps.cache-ror2.outputs.cache-hit != 'true'
       run: ./steamcmd.sh +login anonymous +force_install_dir ror2 +@sSteamCmdForcePlatformType windows +app_update "1180760" +quit
       
-    - name: Checkout MonoMod
-      uses: actions/checkout@v2
-      with:
-        repository: MonoMod/MonoMod
-        path: './MonoMod'
-        
-    - name: Run HookGen
+    - name: Setup dotnet 5.0
       uses: actions/setup-dotnet@v1
       with:
           dotnet-version: 5.0.x
-    - run: |
+      
+    - name: Checkout MonoMod repo
+      uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+        repository: MonoMod/MonoMod
+        path: './MonoMod'
+          
+    - name: Run HookGen
+      run: |
         cd MonoMod/MonoMod/
         dotnet build --configuration Release
         cd MonoMod.RuntimeDetour.HookGen/bin/Release/net5.0
-        ./MonoMod.RuntimeDetour.HookGen --private ../../../../../ror2/Risk of Rain 2_Data/Managed/RoR2.dll MMHOOK_RoR2.dll
+        ./MonoMod.RuntimeDetour.HookGen --private "../../../../../ror2/Risk of Rain 2_Data/Managed/RoR2.dll" MMHOOK_RoR2.dll
         ls -al
