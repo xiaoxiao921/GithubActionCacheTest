@@ -16,8 +16,7 @@ jobs:
         rm -rfv steamcmd_linux.tar.gz
         
     - name: Install get_steam_app_info.py dependencies
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
         run: |
