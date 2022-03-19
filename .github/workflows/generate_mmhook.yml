@@ -1,0 +1,60 @@
+name: Generate and Nuget Publish MMHOOK
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install SteamCMD
+      run: |
+        wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+        tar -xvzf steamcmd_linux.tar.gz
+        rm -rfv steamcmd_linux.tar.gz
+        
+    - name: Install get_steam_app_info.py dependencies
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Get RoR2 version id
+      id: ror2-version
+      run: echo "::set-output name=ver::$(curl -s python3 get_steam_app_info.py 1180760 | jq -r ".\"1180760\".depots.branches.public.buildid")"
+
+    - name: Cache RoR2
+      id: cache-ror2
+      uses: actions/cache@v2
+      with:
+        path: ror2
+        key: ${{ steps.ror2-version.outputs.ver }}
+
+    - name: Download RoR2
+      if: steps.cache-ror2.outputs.cache-hit != 'true'
+      run: ./steamcmd.sh +login anonymous +force_install_dir ror2 +@sSteamCmdForcePlatformType windows +app_update "1180760" +quit
+      
+    - name: Checkout MonoMod
+      uses: actions/checkout@v2
+      with:
+        repository: MonoMod/MonoMod
+        path: './MonoMod'
+        
+    - name: Run HookGen
+      uses: actions/setup-dotnet@v1
+      with:
+          dotnet-version: 5.0.x
+    - run: |
+        cd MonoMod/MonoMod/
+        dotnet build --configuration Release
+        cd MonoMod.RuntimeDetour.HookGen/bin/Release/net5.0
+        ./MonoMod.RuntimeDetour.HookGen --private ../../../../../ror2/Risk of Rain 2_Data/Managed/RoR2.dll MMHOOK_RoR2.dll
+        ls -al
