@@ -15,10 +15,12 @@ jobs:
         tar -xvzf steamcmd_linux.tar.gz
         rm -rfv steamcmd_linux.tar.gz
         
-    - name: Install get_steam_app_info.py dependencies
+    - name: Setup Python 3.9
       uses: actions/setup-python@v3
       with:
         python-version: '3.9'
+        
+    - name: Install get_steam_app_info.py dependencies
       run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
