@@ -54,7 +54,7 @@ jobs:
           
     - name: Run HookGen
       run: |
-        cd MonoMod/MonoMod/
+        cd MonoMod/
         dotnet build --configuration Release
         cd MonoMod.RuntimeDetour.HookGen/bin/Release/net5.0
         ./MonoMod.RuntimeDetour.HookGen --private "../../../../../ror2/Risk of Rain 2_Data/Managed/RoR2.dll" MMHOOK_RoR2.dll
