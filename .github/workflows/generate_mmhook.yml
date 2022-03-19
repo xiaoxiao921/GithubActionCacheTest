@@ -5,9 +5,6 @@ on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9"]
 
     steps:
     - uses: actions/checkout@v2
@@ -19,17 +16,17 @@ jobs:
         rm -rfv steamcmd_linux.tar.gz
         
     - name: Install get_steam_app_info.py dependencies
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
     - name: Get RoR2 version id
       id: ror2-version
-      run: echo "::set-output name=ver::$(curl -s python3 get_steam_app_info.py 1180760 | jq -r ".\"1180760\".depots.branches.public.buildid")"
+      run: echo "::set-output name=ver::$(curl -s python get_steam_app_info.py 1180760 | jq -r ".\"1180760\".depots.branches.public.buildid")"
 
     - name: Cache RoR2
       id: cache-ror2
