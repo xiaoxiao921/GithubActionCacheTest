@@ -72,7 +72,7 @@ jobs:
         
     - name: Get current date
       id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      run: echo "::set-output name=date::$(date +'%Y.%m.%d')"
       
     - name: Determine NuGet version number
       uses: haya14busa/action-cond@v1
@@ -84,7 +84,8 @@ jobs:
         
     - name: Create NuGet Package
       run: |
-        sed -i -E 's/1.0.0/${{ steps.nuget-version.outputs.value }}.0.0/g' package.nuspec
+        sed -i -E 's/1.0.0/${{ steps.nuget-version.outputs.value }}/g' package.nuspec
         nuget pack package.nuspec
-        ls -al
     
+    - name: Publish NuGet Package
+      run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json'
