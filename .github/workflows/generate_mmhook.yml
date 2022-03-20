@@ -69,13 +69,17 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+        
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       
     - name: Determine NuGet version number
       uses: haya14busa/action-cond@v1
       id: nuget-version
       with:
         cond: ${{ github.event.inputs.version-number == 'auto' }}
-        if_true: "${{ $(date '+%Y-%m-%d') }}"
+        if_true: "${{ steps.date.outputs.date }}"
         if_false: "${{ github.event.inputs.version-number }}"
         
     - name: Create NuGet Package
