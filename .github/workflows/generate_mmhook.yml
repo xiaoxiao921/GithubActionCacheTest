@@ -1,6 +1,12 @@
 name: Generate and Nuget Publish MMHOOK
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      version-number:
+        description: 'Custom NuGet Version Number (Semantic Versioning) (Default to current date)'     
+        required: false
+        default: 'auto'
 
 jobs:
   build:
@@ -63,10 +69,18 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+      
+    - name: Determine NuGet version number
+      uses: haya14busa/action-cond@v1
+      id: nuget-version
+      with:
+        cond: ${{ github.event.inputs.version-number == 'auto' }}
+        if_true: "$(date +'%Y-%m-%d')"
+        if_false: "${{ github.event.inputs.version-number}}"
         
     - name: Create NuGet Package
       run: |
-        sed -i -E 's/1.0.0/${{ steps.ror2-version.outputs.ver }}.0.0/g' package.nuspec
+        sed -i -E 's/1.0.0/${{ steps.nuget-version.outputs.value }}.0.0/g' package.nuspec
         nuget pack package.nuspec
         ls -al
     
