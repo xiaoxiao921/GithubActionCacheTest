@@ -1,3 +1,20 @@
+<script>
+	let root = document.documentElement;
+
+	root.style.setProperty('background-color', "#1F1B24");
+	root.style.setProperty('color', "lightgray");
+	root.style.setProperty('font-family', "consolas");
+</script>
+
+<h1>Addressables Assets Keys</h1>
+
+<p>var loadedAsset = Addressables.LoadAssetAsync<Type>(Key).WaitForCompletion();</p>
+
+<form onsubmit="filterIt(); return false;">
+<input type="text" id="filter" value="RoR2.CharacterSpawnCard">
+<input type="submit" value="Apply Text Filter">
+</form>
+
 <table id="default" class="">
 	<tr>
 		<td>
@@ -154974,3 +154991,26 @@
 			AkXboxSeriesXSettings		</td>
 	</tr>
 </table>
+
+<script>
+    function filterIt() {
+        var input, filter, table, tr, td, i, txtValue;
+
+        table = document.getElementById("default");
+        tr = table.getElementsByTagName("tr");
+        var filter = document.getElementById("filter").value.toUpperCase();
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            tr[i].style.display = "none";
+            for (const td of tr[i].getElementsByTagName("td")) {
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    }
+                }
+            }
+        }
+    }
+</script>
